@@ -22,7 +22,7 @@ struct RestaurantListView: View {
     var body: some View {
         List{
             ForEach(restaurantNames.indices, id:\ .self) { index in
-                BasicTextImageRow()
+                BasicTextImageRow(imageName: restaurantImages[index], name: restaurantNames[index], type: restaurantTypes[index], location: restaurantLocations[index])
                 
             }
             .listRowSeparator(.hidden)
@@ -42,6 +42,8 @@ struct BasicTextImageRow: View {
     var type: String
     var location: String
     
+    @State private var showOptions = false
+    
     var body: some View {
         HStack(alignment: .top, spacing: 20) {
             Image(imageName)
@@ -59,6 +61,52 @@ struct BasicTextImageRow: View {
                 Text(location)
                     .font(.system(.subheadline, design: .rounded))
             }
+        }
+        .onTapGesture {
+            showOptions.toggle()
+        }
+        .confirmationDialog("What do you want to do?", isPresented: $showOptions, titleVisibility: .visible) {
+            Button("Reserve a table") {
+                
+            }
+            Button("Mark as favortie") {
+                
+            }
+        }
+    }
+}
+
+
+
+struct FullImageRow: View {
+    
+    var imageName: String
+    var name: String
+    var type: String
+    var location: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10){
+            Image(imageName)
+                .resizable()
+                .scaledToFill()
+                .frame(height: 200)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+            
+            VStack(alignment: .leading) {
+                Text(name)
+                    .font(.system(.title2, design: .rounded))
+                
+                Text(type)
+                    .font(.system(.body, design: .rounded))
+                
+                
+                Text(location)
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.gray)
+            }
+            .padding(.horizontal)
+            .padding(.bottom)
         }
     }
 }
