@@ -17,12 +17,12 @@ struct RestaurantListView: View {
 
     var restaurantTypes = ["Coffee & Tea Shop", "Cafe", "Tea House", "Austrian / Causual Drink", "French", "Bakery", "Bakery", "Chocolate", "Cafe", "American / Seafood", "American", "American", "Breakfast & Brunch", "Coffee & Tea", "Coffee & Tea", "Latin American", "Spanish", "Spanish", "Spanish", "British", "Thai"]
     
-    
+    @State var restaurantIsFavorites = Array(repeating: false, count: 21)
     
     var body: some View {
         List{
             ForEach(restaurantNames.indices, id:\ .self) { index in
-                BasicTextImageRow(imageName: restaurantImages[index], name: restaurantNames[index], type: restaurantTypes[index], location: restaurantLocations[index])
+                BasicTextImageRow(imageName: restaurantImages[index], name: restaurantNames[index], type: restaurantTypes[index], location: restaurantLocations[index], isFavorite: $restaurantIsFavorites[index])
                 
             }
             .listRowSeparator(.hidden)
@@ -36,6 +36,20 @@ struct RestaurantListView: View {
         .preferredColorScheme(.dark)
 }
 
+
+// ONLY AVAILABLE IN IOS 17
+
+//#Preview("BasicTextImageRow", traits: .sizeThatFitsLayout) {
+//    BasicTextImageRow(imageName: "cafedeadend", name: "Cafe Deadend", type: "Cafe", location: "Hong Kong", isFavorite: .constant(true))
+//}
+//
+//#Preview("FullImageRow", traits: .sizeThatFitsLayout) {
+//    FullImageRow(imageName: "cafedeadend", name: "Cafe Deadend", type: "Cafe", location: "Hong Kong")
+//}
+
+
+
+
 struct BasicTextImageRow: View {
     var imageName: String
     var name: String
@@ -43,6 +57,8 @@ struct BasicTextImageRow: View {
     var location: String
     
     @State private var showOptions = false
+    @State private var showError = false
+    @Binding var isFavorite: Bool
     
     var body: some View {
         HStack(alignment: .top, spacing: 20) {
@@ -61,17 +77,29 @@ struct BasicTextImageRow: View {
                 Text(location)
                     .font(.system(.subheadline, design: .rounded))
             }
+            
+            if isFavorite {
+                Spacer()
+                Image(systemName: "heart.fill")
+                    .foregroundStyle(.yellow)
+            }
         }
         .onTapGesture {
             showOptions.toggle()
         }
         .confirmationDialog("What do you want to do?", isPresented: $showOptions, titleVisibility: .visible) {
             Button("Reserve a table") {
-                
+                self.showError.toggle()
             }
+           
             Button("Mark as favortie") {
-                
+                self.isFavorite.toggle()
             }
+        }
+        .alert("Not yet available", isPresented: $showError) {
+            Button("OK"){ }
+        } message: {
+            Text("Sorry, this feature is not available yet. Please retry later.")
         }
     }
 }
