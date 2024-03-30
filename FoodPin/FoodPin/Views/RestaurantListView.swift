@@ -51,6 +51,25 @@ struct RestaurantListView: View {
                 BasicTextImageRow(restaurant: $restaurants[index])
                 
             }
+            .onDelete(perform: { indexSet in
+                restaurants.remove(atOffsets: indexSet)
+            })
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                Button {
+                    
+                } label: {
+                    Image(systemName: "heart")
+                }
+                .tint(.green)
+                
+                Button {
+                    
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .tint(.orange)
+            }
+           
             .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
@@ -86,6 +105,8 @@ struct BasicTextImageRow: View {
     @State private var showOptions = false
     @State private var showError = false
 //    @Binding var isFavorite: Bool
+    
+    // MARK: - Binding
     
     @Binding var restaurant: Restaurant
     
@@ -134,6 +155,7 @@ struct BasicTextImageRow: View {
 }
 
 
+// MARK: - Full image row view
 
 struct FullImageRow: View {
     
